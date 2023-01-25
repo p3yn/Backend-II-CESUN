@@ -13,7 +13,7 @@ class AuthorController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request) {
+    public function index() {
         try{
         $authors = Author::all();
         return $authors;

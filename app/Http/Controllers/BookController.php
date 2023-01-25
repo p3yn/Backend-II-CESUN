@@ -16,9 +16,8 @@ class BookController extends Controller
     public function index(Request $request)
     {
         try{
-            $books = Book::select()->HasReleaseDate($request->release_date)
-            ->ordenBy()
-            ->groupBy();
+            $books = Book::select($request -> id)
+            ->orderBy($request -> id)->groupBy();
 
             return response()->json($books);
         }
@@ -103,7 +102,8 @@ class BookController extends Controller
     {
         try{
             $books = Book::find($id);
-            $books->delete();
+            $books->destroy();
+            return $books;
         } catch (Exception $e) {
             return response()->json(['error' => $e -> getMessage()], 400);
         }
