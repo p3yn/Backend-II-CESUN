@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Author;
+use Exception;
 
 class AuthorController extends Controller
 {
@@ -12,22 +13,32 @@ class AuthorController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    public function index(Request $request) {
+        try{
         $authors = Author::all();
-        return view('authors.index')->with('authors', $authors);
+        return $authors;
+        }
+        catch (Exception $e) {
+            return response()->json(['error' => $e -> getMessage()], 400);
+        }
     }
-
-    
+   
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        //
+    public function store(Request $request) {
+        try{
+            $authors = new Author();
+            $authors -> name = $request -> name;
+
+            $authors -> save();
+        }
+        catch(Exception $e){
+            return response()->json(['error' => $e -> getMessage()], 400);
+        }
     }
 
     /**
@@ -36,8 +47,14 @@ class AuthorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-        //
+    public function show($id) {
+        try{
+            $author = Author::find($id);
+            
+        } 
+        catch (Exception $e) {
+            return response()->json(['error' => $e -> getMessage()], 400);
+        }
+        return Author::findOrFail($id);
     }
 }

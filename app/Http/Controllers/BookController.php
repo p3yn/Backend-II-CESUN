@@ -16,26 +16,17 @@ class BookController extends Controller
     public function index(Request $request)
     {
         try{
-            $books = Book::select()->hasReleaseDate
-                ->orderBy()->groupBy();
+            $books = Book::select()->HasReleaseDate($request->release_date)
+            ->ordenBy()
+            ->groupBy();
 
             return response()->json($books);
         }
         catch(Exception $e){
-            return response()->json(['message']);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
+    
     /**
      * Store a newly created resource in storage.
      *
@@ -44,7 +35,21 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try{
+            $books = Book::create(
+                [
+                    'title'=> $request->title, 
+                    'author'=>$request->author,
+                    'release_year' => $request->release_year,
+                    'isbn' => $request->isbn
+                                         
+                ]
+            );
+            $books->save();            
+        }
+        catch(Exception $e){
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
     }
 
     /**
@@ -53,21 +58,18 @@ class BookController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-        //
+    public function show($id){
+        try{
+            $books = Book::find($id);
+            
+        } 
+        catch (Exception $e) {
+            return response()->json(['error' => $e -> getMessage()], 400);
+        }
     }
+    
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+    
 
     /**
      * Update the specified resource in storage.
@@ -78,8 +80,18 @@ class BookController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try{
+            $books = Book::find($id);
+            $books->title = Book::get('title');
+            $books->author = Book::get('author');
+            $books->release_year = Book::get('release_year');
+            $books->isbn = Book::get('isbn');
+            $books->save();
+        } catch (Exception $e) {
+            return response()->json(['error' => $e -> getMessage()], 400);
+        }
     }
+    
 
     /**
      * Remove the specified resource from storage.
@@ -89,6 +101,11 @@ class BookController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try{
+            $books = Book::find($id);
+            $books->delete();
+        } catch (Exception $e) {
+            return response()->json(['error' => $e -> getMessage()], 400);
+        }
     }
 }

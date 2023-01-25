@@ -10,5 +10,5 @@ class Author extends Model
     use HasFactory;
     protected $table = 'authors';
     protected $primaryKey = 'id';
-    protected $fillable = 'names';
+    protected $fillable = 'name';
 }
